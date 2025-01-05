@@ -1,0 +1,438 @@
+{UTF-8}
+Actual Sewage Service provided=
+	Planned sewage coverage ratio*Effect on actual building
+	~	Dmnl
+	~		|
+
+Effect on actual building = WITH LOOKUP (
+	Financing gap,
+		       ([(0,0.4)-(9.195e+12,1)],(0,1),(2.53655e+11,0.907692),(6.55276e+11,0.859441)\
+		,(8.03241e+11,0.842657),(1.18372e+12,0.800699),(1.77559e+12,0.731469),(2.452e+12,0.651748\
+		),(3.25524e+12,0.597203),(4.52352e+12,0.546853),(5.60155e+12,0.511189),(7.31372e+12\
+		,0.483916),(9.11045e+12,0.452448) ))
+	~	Dmnl
+	~		|
+
+Effect on tariff price = WITH LOOKUP (
+	Financing gap,
+		      ([(0,0)-(7e+12,3)],(0,1),(4.13793e+11,1.11154),(8.04598e+11,1.17692),(1.18391e+12\
+		,1.22692),(1.77011e+12,1.27692),(2.34483e+12,1.29615),(2.94253e+12,1.30769),(3.51724e+12\
+		,1.33846),(4.241e+12,1.42692),(4.57471e+12,1.56154),(4.81149e+12,1.6993),(5.03678e+12\
+		,1.84615),(5.1977e+12,1.91958),(5.55172e+12,2.0035),(5.90575e+12,2.06643),(7e+12,2.1\
+		) ))
+	~	
+	~		|
+
+Tariff revenue=
+	Total tariff revenue
+	~	IDR/Year
+	~		|
+
+Financing gap= INTEG (
+	required rate of financing-Tariff revenue,
+		0)
+	~	
+	~		|
+
+Cost of Project to be covered by tariff=
+	(6e+13)
+	~	IDR/Year
+	~		|
+
+required rate of financing=
+	Cost of Project to be covered by tariff*Percentage on loan/Years due
+	~	IDR/Year
+	~		|
+
+Tariff price per unit area=
+	131*12*Effect on tariff price
+	~	IDR/m2/Year/household
+	~		|
+
+Percentage on loan=
+	0.35
+	~	Dmnl
+	~		|
+
+Years due=
+	50
+	~	Year
+	~		|
+
+total pollutants in wastewater=
+	146365/9.5e+06 * Population
+	~	tonnes/Year/people
+	~		|
+
+Current desludge rate=
+	1*PULSE TRAIN(5,1,3,50)
+	~	
+	~		|
+
+Waste leaked from septic tanks=
+	total pollutants directed to septic tank-Black treated water
+	~	tonnes/Year
+	~		|
+
+Pollution in river= INTEG (
+	Pollutants flow into river-Natural absorbtion,
+		0)
+	~	tonnes
+	~		|
+
+Average household area=
+	63
+	~	m2
+	~		|
+
+Awareness=
+	0.1
+	~	Dmnl
+	~		|
+
+Capacity of septic tank=
+	3.5
+	~	m3/households
+	~		|
+
+Collection rate=
+	MIN(Awareness+Willingness to pay,1)
+	~	Dmnl
+	~		|
+
+Connection rate=
+	Actual Sewage Service provided
+	~	Dmnl
+	~		|
+
+Connection ratio to septic tank=
+	1-Connection ratio to sewage-proportion of unregulated wastewater
+	~	Dmnl
+	~		|
+
+Number per household=
+	5
+	~	people/households
+	~		|
+
+Effectiveness of septic tank=
+	IF THEN ELSE(Amount of sludge generated>Total capacity possible,0.7,1)
+	~	Dmnl
+	~		|
+
+household=
+	Population/Number per household
+	~	households
+	~		|
+
+Households per septic tank=
+	1
+	~	
+	~		|
+
+Natural absorbtion=
+	0.2
+	~	tonnes/Year
+	~		|
+
+volume to tonnes=
+	0.05
+	~	tonnes/m3
+	~		|
+
+Willingness to pay = WITH LOOKUP (
+	Tariff price per unit area,
+		     ([(100,0)-(5000,1)],(133,1),(1000,1),(1500,0.8),(1931,0.688811),(2600.9,0.601399\
+		),(3570.5,0.538462),(4350.6,0.503497),(5000,0.5) ))
+	~	Dmnl
+	~		|
+
+total pollutants directed to septic tank=
+	total pollutants in wastewater*Connection ratio to septic tank
+	~	tonnes/Year
+	~		|
+
+Removal of sludge=
+	IF THEN ELSE(Current desludge rate=1,Amount of sludge generated,0)
+	~	
+	~		|
+
+Planned sewage coverage ratio = WITH LOOKUP (
+	Time,
+		      ([(0,0)-(38,0.03)],(0,0),(0.786207,0.000104893),(1,0.01),(2.0023,0.0101748),(\
+		2.15172,0.0210839),(8,0.0216),(8.0092,0.020035),(13,0.02),(18,0.02),(18.4322,0.0297902\
+		),(23,0.03),(22.8874,0.020035),(28,0.02),(33,0.02),(33.108,0.0101748),(38,0.01) ))
+	~	Dmnl
+	~		|
+
+Population = WITH LOOKUP (
+	Time,
+		   ([(0,0)-(50,2e+07)],(0,9.5e+06),(13,1.15e+07),(41.4943,1.385e+07),(49.6552,1.483e+07\
+		) ))
+	~	people
+	~		|
+
+Total capacity possible=
+	volume to tonnes*household*Connection ratio to septic tank*Capacity of septic tank/Households per septic tank
+	~	tonnes
+	~		|
+
+Total tariff revenue=
+	Tariff price per unit area*household*Collection rate*Average household area
+	~	IDR/Year
+	~		|
+
+Pollutants flow into river=
+	pollutants from unregulated wastewater+Waste leaked from septic tanks
+	~	tonnes/Year
+	~		|
+
+Black treated water=
+	Percentage of black water*total pollutants directed to septic tank*Effectiveness of septic tank
+	~	tonnes/Year
+	~		|
+
+pollutants sent to sewage=
+	Connection ratio to sewage*total pollutants in wastewater
+	~	tonnes/Year
+	~		|
+
+proportion of unregulated wastewater = WITH LOOKUP (
+	Connection ratio to sewage,
+		        ([(0,0)-(0.8,0.2)],(0.01,0.1),(0.121379,0.0951),(0.274023,0.08881),(0.415632\
+		,0.07867),(0.54069,0.06923),(0.697012,0.04406),(0.765058,0.02308),(0.8,0) ))
+	~	Dmnl
+	~		|
+
+Rate of desludge=
+	Removal of sludge
+	~	
+	~		|
+
+Rate of inflow=
+	total pollutants directed to septic tank*Percentage of sludge
+	~	tonnes/Year
+	~		|
+
+Connection ratio to sewage= INTEG (
+	Connection rate,
+		0.02)
+	~	Dmnl
+	~		|
+
+Amount of sludge generated= INTEG (
+	Rate of inflow-Rate of desludge,
+		0)
+	~	
+	~		|
+
+Percentage of sludge=
+	0.2
+	~	Dmnl
+	~		|
+
+Percentage of black water=
+	0.4
+	~	Dmnl
+	~		|
+
+pollutants from unregulated wastewater=
+	proportion of unregulated wastewater*total pollutants in wastewater
+	~	tonnes/Year
+	~		|
+
+********************************************************
+	.Control
+********************************************************~
+		Simulation Control Parameters
+	|
+
+FINAL TIME  = 50
+	~	Year
+	~	The final time for the simulation.
+	|
+
+INITIAL TIME  = 0
+	~	Year
+	~	The initial time for the simulation.
+	|
+
+SAVEPER  = 
+        TIME STEP
+	~	Year [0,?]
+	~	The frequency with which output is stored.
+	|
+
+TIME STEP  = 0.0625
+	~	Year [0,?]
+	~	The time step for the simulation.
+	|
+
+\\\---/// Sketch information - do not modify anything except names
+V300  Do not put anything below this section - it will be ignored
+*View 1
+$192-192-192,0,Courier|12||0-0-0|0-0-0|0-0-255|-1--1--1|255-255-255|96,96,100,0
+10,1,Pollution in river,61,399,40,20,3,3,0,0,0,0,0,0,0,0,0,0,0,0
+12,2,48,-161,395,0,0,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,3,5,1,4,0,0,22,0,0,0,-1--1--1,,1|(-22,395)|
+1,4,5,2,100,0,0,22,0,0,0,-1--1--1,,1|(-161,395)|
+11,5,0,-70,395,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,6,Pollutants flow into river,-70,421,39,18,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+12,7,48,282,397,0,0,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,8,10,7,4,0,0,22,0,0,0,-1--1--1,,1|(191,397)|
+1,9,10,1,100,0,0,22,0,0,0,-1--1--1,,1|(143,397)|
+11,10,0,191,397,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,11,Natural absorbtion,191,417,39,12,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,12,total pollutants directed to septic tank,-187,315,61,18,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,13,Percentage of black water,321,307,50,12,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,14,Black treated water,137,302,50,12,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,15,Percentage of sludge,-94,180,39,12,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,16,Amount of sludge generated,51,218,40,20,3,3,0,0,0,0,0,0,0,0,0,0,0,0
+12,17,48,-119,209,0,0,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,18,20,16,4,0,0,22,0,0,0,-1--1--1,,1|(-19,209)|
+1,19,20,17,100,0,0,22,0,0,0,-1--1--1,,1|(-119,209)|
+11,20,0,-54,209,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,21,Rate of inflow,-54,224,53,7,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+12,22,48,227,216,0,0,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,23,25,22,4,0,0,22,0,0,0,-1--1--1,,1|(159,216)|
+1,24,25,16,100,0,0,22,0,0,0,-1--1--1,,1|(122,216)|
+11,25,0,159,216,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,26,Rate of desludge,159,231,60,7,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,27,Effectiveness of septic tank,11,130,54,12,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,28,Capacity of septic tank,-216,53,43,12,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,29,pollutants sent to sewage,-325,554,54,12,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,30,Connection ratio to sewage,71,489,40,20,3,3,0,0,0,0,0,0,0,0,0,0,0,0
+12,31,48,286,485,0,0,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,32,34,30,4,0,0,22,0,0,0,-1--1--1,,1|(151,485)|
+1,33,34,31,100,0,0,22,0,0,0,-1--1--1,,1|(198,485)|
+11,34,0,198,485,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,35,Connection rate,198,505,56,7,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,36,pollutants from unregulated wastewater,-126,485,57,18,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,37,Waste leaked from septic tanks,-29,318,46,18,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,38,Planned sewage coverage ratio,404,426,54,12,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,39,Total tariff revenue,300,583,46,12,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,40,Willingness to pay,350,764,42,12,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,41,12,37,1,0,0,0,0,64,0,-1--1--1,,1|(-119,351)|
+1,42,15,21,1,0,0,0,0,64,0,-1--1--1,,1|(-71,199)|
+1,43,12,21,1,0,0,0,0,64,0,-1--1--1,,1|(-132,266)|
+1,44,13,14,1,0,0,0,0,64,0,-1--1--1,,1|(242,343)|
+1,45,14,37,1,0,0,0,0,64,0,-1--1--1,,1|(75,339)|
+1,46,27,14,1,0,0,0,0,64,0,-1--1--1,,1|(101,185)|
+1,47,16,27,1,0,0,0,0,64,0,-1--1--1,,1|(39,174)|
+10,48,Removal of sludge,320,234,39,12,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,49,48,26,1,0,0,0,0,64,0,-1--1--1,,1|(247,249)|
+1,50,37,6,1,0,0,0,0,64,0,-1--1--1,,1|(-10,362)|
+1,51,36,6,1,0,0,0,0,64,0,-1--1--1,,1|(-89,469)|
+1,52,30,29,1,0,0,0,0,64,0,-1--1--1,,1|(-105,634)|
+10,53,total pollutants in wastewater,-341,421,50,18,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,54,53,12,1,0,0,0,0,64,0,-1--1--1,,1|(-284,354)|
+1,55,53,29,1,0,0,0,0,64,0,-1--1--1,,1|(-348,478)|
+10,56,proportion of unregulated wastewater,-199,563,50,18,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,57,30,56,1,0,0,0,0,64,0,-1--1--1,,1|(-121,588)|
+1,58,56,36,1,0,0,0,0,64,0,-1--1--1,,1|(-148,530)|
+1,59,53,36,1,0,0,0,0,64,0,-1--1--1,,1|(-233,469)|
+1,60,12,14,1,0,0,0,0,64,0,-1--1--1,,1|(-29,267)|
+1,61,16,48,1,0,0,0,0,64,0,-1--1--1,,1|(170,163)|
+10,62,Time,173,473,24,7,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,63,62,38,0,0,0,0,0,64,0,-1--1--1,,1|(0,0)|
+10,64,Actual Sewage Service provided,341,508,50,18,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,65,38,64,0,0,0,0,0,64,0,-1--1--1,,1|(0,0)|
+1,66,64,35,0,0,0,0,0,64,0,-1--1--1,,1|(0,0)|
+10,67,Current desludge rate,418,190,49,12,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,68,67,48,0,0,0,0,0,64,0,-1--1--1,,1|(0,0)|
+10,69,Tariff price per unit area,508,757,49,12,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,70,household,179,610,35,7,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,71,Population,231,680,38,7,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,72,Time,234,761,24,7,8,2,0,3,-1,0,0,0,128-128-128,0-0-0,|||128-128-128,0,0,0,0,0,0
+1,73,72,71,1,0,0,0,0,64,0,-1--1--1,,1|(239,712)|
+1,74,71,70,1,0,0,0,0,64,0,-1--1--1,,1|(210,639)|
+10,75,Number per household,110,578,39,12,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,76,75,70,1,0,0,0,0,64,0,-1--1--1,,1|(153,586)|
+1,77,70,39,1,0,0,0,0,64,0,-1--1--1,,1|(238,606)|
+1,78,69,39,1,0,0,0,0,64,0,-1--1--1,,1|(425,635)|
+10,79,Average household area,445,583,34,18,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,80,79,39,1,0,0,0,0,64,0,-1--1--1,,1|(375,572)|
+10,81,Collection rate,355,682,56,7,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,82,81,39,1,0,0,0,0,64,0,-1--1--1,,1|(320,624)|
+1,83,40,81,1,0,0,0,0,64,0,-1--1--1,,1|(347,731)|
+10,84,Awareness,260,807,35,7,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,85,84,81,1,0,0,0,0,64,0,-1--1--1,,1|(299,740)|
+1,86,69,40,0,0,0,0,0,64,0,-1--1--1,,1|(0,0)|
+10,87,volume to tonnes,-72,67,60,7,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,88,Connection ratio to septic tank,-301,246,57,18,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,89,30,88,1,0,0,0,0,64,0,-1--1--1,,1|(-412,487)|
+1,90,56,88,1,0,0,0,0,64,0,-1--1--1,,1|(-222,373)|
+1,91,88,12,0,0,0,0,0,64,0,-1--1--1,,1|(0,0)|
+10,92,Total capacity possible,-152,118,31,18,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,93,70,92,1,0,0,0,0,64,0,-1--1--1,,1|(-259,583)|
+1,94,88,92,0,0,0,0,0,64,0,-1--1--1,,1|(0,0)|
+1,95,28,92,0,0,0,0,0,64,0,-1--1--1,,1|(0,0)|
+1,96,87,92,0,0,0,0,0,64,0,-1--1--1,,1|(0,0)|
+1,97,92,27,0,0,0,0,0,64,0,-1--1--1,,1|(0,0)|
+10,98,Households per septic tank,-318,78,39,18,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,99,98,92,0,0,0,0,0,64,0,-1--1--1,,1|(0,0)|
+1,100,71,53,1,0,0,0,0,64,0,-1--1--1,,1|(-341,608)|
+10,101,Effect on actual building,585,432,35,18,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,102,Cost of Project to be covered by tariff,867,579,61,18,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,103,Percentage on loan,823,360,39,12,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,104,Effect on tariff price,614,646,46,12,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+10,105,Financing gap,692,465,40,20,3,3,0,0,0,0,0,0,0,0,0,0,0,0
+12,106,48,847,465,0,0,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,107,109,105,4,0,0,22,0,0,0,-1--1--1,,1|(757,460)|
+1,108,109,106,100,0,0,22,0,0,0,-1--1--1,,1|(789,465)|
+11,109,0,789,460,6,8,34,3,0,0,1,0,0,0,0,0,0,0,0,0
+10,110,required rate of financing,789,480,50,12,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+12,111,48,690,576,0,0,0,3,0,0,-1,0,0,0,0,0,0,0,0,0
+1,112,114,111,4,0,0,22,0,0,0,-1--1--1,,1|(690,530)|
+1,113,114,105,100,0,0,22,0,0,0,-1--1--1,,1|(690,504)|
+11,114,0,690,530,8,6,33,3,0,0,4,0,0,0,0,0,0,0,0,0
+10,115,Tariff revenue,751,530,53,7,40,3,0,0,-1,0,0,0,0,0,0,0,0,0
+10,116,Years due,886,410,35,7,8,3,0,0,0,0,0,0,0,0,0,0,0,0
+1,117,102,110,0,0,0,0,0,64,0,-1--1--1,,1|(0,0)|
+1,118,116,110,0,0,0,0,0,64,0,-1--1--1,,1|(0,0)|
+1,119,103,110,0,0,0,0,0,64,0,-1--1--1,,1|(0,0)|
+1,120,105,101,0,0,0,0,0,64,0,-1--1--1,,1|(0,0)|
+1,121,105,104,1,0,0,0,0,64,0,-1--1--1,,1|(620,557)|
+1,122,101,64,0,0,0,0,0,64,0,-1--1--1,,1|(0,0)|
+1,123,39,115,1,0,0,0,0,64,0,-1--1--1,,1|(490,528)|
+1,124,104,69,0,0,0,0,0,64,0,-1--1--1,,1|(0,0)|
+///---\\\
+:L<%^E!@
+4:Time
+5:Effect on actual building
+9:policy model
+19:100,0
+24:0
+25:50
+26:50
+23:0
+15:0,0,0,0,0,0
+27:0,
+34:0,
+42:1
+72:0
+73:0
+35:Date
+36:YYYY-MM-DD
+37:2000
+38:1
+39:1
+40:0
+41:0
+95:0
+96:0
+97:0
+77:0
+78:0
+102:1
+93:0
+94:0
+92:0
+91:0
+90:0
+87:0
+75:
+43:
+103:8,8,8,3,8
+105:0,0,0,0,0,0,0,0,0,0
+104:Courier|12||0-0-0|0-0-0|-1--1--1|0-0-255|192-192-192|-1--1--1
