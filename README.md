@@ -1,3 +1,4 @@
 # Vensim Model Case Study : Jakarta's Wastewater Plan Systems Analysis
 Project 1: A thorough case study on Jakarta's existing wastewater challenges and an evaluation on the proposed New Wastewater Management Plan. Utilizing Vensim software, causal loop diagrams are constructed to represent the complex interactions within the system. 
+
 Project 2: Systems dynamic modelling was employed and simulation models are developed, using both primary and secondary data to identify the reasons behind previous policy failures and to test potential new solutions. Concepts like institutional fit are applied to assess how well the proposed policies align with Jakarta's unique socio-economic and environmental context, providing insights into the effectiveness and sustainability of the wastewater management strategies.
